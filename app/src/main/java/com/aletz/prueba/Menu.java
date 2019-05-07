@@ -73,9 +73,9 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        edT = (EditText) findViewById(R.id.editTextBusqueda);
-        btnBus = (Button) findViewById(R.id.botonBusqueda);
-        btnMenu = (Button) findViewById(R.id.botonMenu);
+        edT = findViewById(R.id.editTextBusqueda);
+        btnBus = findViewById(R.id.botonBusqueda);
+        btnMenu = findViewById(R.id.botonMenu);
 
         getDeviceLocation();
 
