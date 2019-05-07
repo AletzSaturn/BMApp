@@ -23,6 +23,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -33,10 +38,17 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
@@ -63,8 +75,16 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
 
         edT = (EditText) findViewById(R.id.editTextBusqueda);
         btnBus = (Button) findViewById(R.id.botonBusqueda);
+        btnMenu = (Button) findViewById(R.id.botonMenu);
 
         getDeviceLocation();
+
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                buscarCoordenada("http://192.168.43.227/BMApp/recuperarCoord.php?idRuta=1");
+            }
+        });
     }
 
     @Override
@@ -134,6 +154,40 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
                 }
             }
         });
+    }
+
+
+    /*
+    LatLng sydney = new LatLng(-34, 151);
+    mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
+    private void buscarCoordenada(String URL){
+        JsonArrayRequest jsnar = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                JSONObject jso = null;
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        jso = response.getJSONObject(i);
+                        double lat=Double.parseDouble(jso.getString("Latitud"));
+                        double lon=Double.parseDouble(jso.getString("Longitud"));
+                        LatLng mark = new LatLng(lat,lon);
+                        Marker m;
+                        m = mMap.addMarker(new MarkerOptions().position(mark));
+                        m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.maker));
+                    } catch (JSONException e) {
+                        Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), "Error de conexion", Toast.LENGTH_SHORT).show();
+            }
+        });
+        RequestQueue rQ = Volley.newRequestQueue(this);
+        rQ.add(jsnar);
     }
 
 }
