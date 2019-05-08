@@ -28,11 +28,11 @@ public class RegistroUsuario extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_registro_usuario);
-        edTNom = (EditText) findViewById(R.id.editTextNombre);
-        edTCor = (EditText) findViewById(R.id.editTextCorreo);
-        edTCon = (EditText) findViewById(R.id.editTextContrasena);
-        edTCon2 = (EditText) findViewById(R.id.editTextConfContrasena);
-        btnRegistro = (Button) findViewById(R.id.buttonRegistro);
+        edTNom =  findViewById(R.id.editTextNombre);
+        edTCor =  findViewById(R.id.editTextCorreo);
+        edTCon =  findViewById(R.id.editTextContrasena);
+        edTCon2 = findViewById(R.id.editTextConfContrasena);
+        btnRegistro = findViewById(R.id.buttonRegistro);
 
         btnRegistro.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,7 +40,7 @@ public class RegistroUsuario extends AppCompatActivity {
                 String con1=edTCon.getText().toString();
                 String con2=edTCon2.getText().toString();
                 if (con1.equals(con2)) {
-                    ejecutarServicio("http://192.168.43.227/BMApp/insertarusuario.php");
+                    ejecutarServicio("http://192.168.137.1/BMApp/insertarusuario.php");
                     Intent intent = new Intent(v.getContext(), PantallaPrincipal.class);
                     startActivityForResult(intent, 0);
                 }else{
@@ -63,11 +63,11 @@ public class RegistroUsuario extends AppCompatActivity {
             }
         }){
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
+            protected Map<String, String> getParams() {
                 Map<String,String> parametros = new HashMap<String, String>();
                 parametros.put("Nombre",edTNom.getText().toString());
                 parametros.put("Correo",edTCor.getText().toString());
-                parametros.put("Contraseña",edTCon.getText().toString());
+                parametros.put("Contrasena",edTCon.getText().toString());
                 return parametros;
             }
         };
