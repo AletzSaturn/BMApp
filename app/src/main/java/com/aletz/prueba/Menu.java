@@ -70,6 +70,7 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
     Button btnBus,btnMenu;
     FusedLocationProviderClient fLPC;
     String ip="192.168.137.1";
+    Marker m;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +98,8 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
                   mMap.clear();
                   buscarCoordenada("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=4");
               }else{
-                  Toast.makeText(Menu.this, "La ruta que ingresó no existe, intente de nuevo.", Toast.LENGTH_SHORT).show();
+                  Toast.makeText(Menu.this, "La ruta que ingresó no existe, " +
+                          "intente de nuevo.", Toast.LENGTH_SHORT).show();
               }
 
             }
@@ -108,7 +110,9 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+                (this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mMap.setMyLocationEnabled(true);
@@ -120,7 +124,8 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
                     direccion(latLng);
                 } catch (IOException e) {
                     e.printStackTrace();
-                    Toast.makeText(Menu.this, "Por favor, ingrese una dirección válida.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Menu.this, "Por favor, ingrese una dirección válida.",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -153,29 +158,28 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
         mMap.moveCamera(update);
     }
 
-    public void getDeviceLocation() throws NullPointerException{
-        fLPC = LocationServices.getFusedLocationProviderClient(this);
-        Task location = fLPC.getLastLocation();
-        location.addOnCompleteListener(new OnCompleteListener() {
-            @Override
-            public void onComplete(@NonNull Task task) {
-                if(task.isSuccessful()){
-                    Location currentLocation = (Location) task.getResult();
-                    goToLocation(currentLocation.getLatitude(),currentLocation.getLongitude(),18);
-                }else{
-                    Toast.makeText(Menu.this, "No se encontró tu ubicación actual, ¿Tu GPS está encendido?", Toast.LENGTH_SHORT).show();
+    public void getDeviceLocation(){
+        try {
+            fLPC = LocationServices.getFusedLocationProviderClient(this);
+
+            Task location = fLPC.getLastLocation();
+            location.addOnCompleteListener(new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    if (task.isSuccessful()) {
+                        Location currentLocation = (Location) task.getResult();
+                        goToLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 18);
+                    } else {
+                        Toast.makeText(Menu.this, "No se encontró tu ubicación actual, ¿Tu GPS está encendido?", Toast.LENGTH_SHORT).show();
+                    }
                 }
-            }
-        });
+            });
+        }catch(NullPointerException e){
+            Toast.makeText(this, "No es posible obtener su ubicación. ¿Su GPS está encendido?", Toast.LENGTH_SHORT).show();
+        }
     }
 
-
-    /*
-    LatLng sydney = new LatLng(-34, 151);
-    mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-    mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     private void buscarCoordenada(String URL){
-
         JsonArrayRequest jsnar = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -192,7 +196,6 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
                         lat=Double.parseDouble(jso.getString("Latitud"));
                         lon=Double.parseDouble(jso.getString("Longitud"));
                         LatLng mark = new LatLng(lat,lon);
-                        Marker m;
                         m = mMap.addMarker(new MarkerOptions().position(mark));
                         m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.maker));
                         if(i>0){
