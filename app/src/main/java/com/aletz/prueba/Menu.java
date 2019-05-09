@@ -3,9 +3,12 @@ package com.aletz.prueba;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Criteria;
 import android.location.Geocoder;
@@ -19,6 +22,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -43,6 +47,8 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -82,7 +88,17 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                buscarCoordenada("http://192.168.43.227/BMApp/recuperarCoord.php?idRuta=1");
+              String numCam= edT.getText().toString();
+              if(numCam.equals("1") || numCam.equals("Potrerillos")){
+                  mMap.clear();
+                  buscarCoordenada("http://192.168.1.78/BMApp/recuperarCoord.php?idRuta=1");
+              }else if(numCam.equals("4") || numCam.equals("Lienzo Charro")){
+                  mMap.clear();
+                  buscarCoordenada("http://192.168.1.78/BMApp/recuperarCoord.php?idRuta=4");
+              }else{
+                  Toast.makeText(Menu.this, "La ruta que ingresó no existe, intente de nuevo.", Toast.LENGTH_SHORT).show();
+              }
+
             }
         });
     }
@@ -105,8 +121,6 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
                     e.printStackTrace();
                     Toast.makeText(Menu.this, "Por favor, ingrese una dirección válida.", Toast.LENGTH_SHORT).show();
                 }
-             // LLAMAR ACTIVIDAD DESDE FRAGMENTO   Intent intent = new Intent (getApplicationContext(), PantallaInicioSesion.class);
-             //   startActivity(intent);
             }
         });
     }
@@ -145,11 +159,9 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
             @Override
             public void onComplete(@NonNull Task task) {
                 if(task.isSuccessful()){
-                    System.out.println("Locación encontrada");
                     Location currentLocation = (Location) task.getResult();
                     goToLocation(currentLocation.getLatitude(),currentLocation.getLongitude(),18);
                 }else{
-                    System.out.println("Locación no encontrada");
                     Toast.makeText(Menu.this, "No se encontró tu ubicación actual, ¿Tu GPS está encendido?", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -162,19 +174,32 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
     mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
     mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     private void buscarCoordenada(String URL){
+
         JsonArrayRequest jsnar = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 JSONObject jso = null;
+                double lat=0,lat1=0;
+                double lon=0,lon1=0;
                 for (int i = 0; i < response.length(); i++) {
                     try {
+                        if (i>0){
+                        lat1=lat;
+                        lon1=lon;
+                        }
                         jso = response.getJSONObject(i);
-                        double lat=Double.parseDouble(jso.getString("Latitud"));
-                        double lon=Double.parseDouble(jso.getString("Longitud"));
+                        lat=Double.parseDouble(jso.getString("Latitud"));
+                        lon=Double.parseDouble(jso.getString("Longitud"));
                         LatLng mark = new LatLng(lat,lon);
                         Marker m;
                         m = mMap.addMarker(new MarkerOptions().position(mark));
                         m.setIcon(BitmapDescriptorFactory.fromResource(R.drawable.maker));
+                        if(i>0){
+                            Polyline line = mMap.addPolyline(new PolylineOptions()
+                                    .add(new LatLng(lat,lon), new LatLng(lat1,lon1))
+                                    .width(7)
+                                    .color(Color.BLUE));
+                        }
                     } catch (JSONException e) {
                         Toast.makeText(getApplicationContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
