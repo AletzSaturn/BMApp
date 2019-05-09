@@ -27,6 +27,7 @@ public class PantallaInicioSesion extends AppCompatActivity {
     RequestQueue rQ;
     boolean encontrado;
     String con="";
+    String ip="192.168.137.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class PantallaInicioSesion extends AppCompatActivity {
             public void onClick(View v) {
                 //192.168.43.227
                 //192.168.1.78
-                buscarCorreo("http://192.168.43.227/BMApp/recuperarCorreo.php?correo=" + eTCor.getText().toString());
+                buscarCorreo("http://"+ip+"/BMApp/recuperarCorreo.php?correo=" + eTCor.getText().toString());
             }
         });
     }
@@ -65,7 +66,7 @@ public class PantallaInicioSesion extends AppCompatActivity {
                     try {
                         jso = response.getJSONObject(i);
                         if (jso!=null){
-                            buscarContrasena("http://192.168.43.227/BMApp/recuperarContra.php?correo="
+                            buscarContrasena("http://"+ip+"/BMApp/recuperarContra.php?correo="
                                     + eTCor.getText().toString());
                         }else{
                             Toast.makeText(PantallaInicioSesion.this, "El correo no coincide" +

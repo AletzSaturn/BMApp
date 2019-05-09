@@ -53,6 +53,7 @@ public class AdminMap extends FragmentActivity implements OnMapReadyCallback {
     EditText edT;
     Button btnBus, btnMenu;
     FusedLocationProviderClient fLPC;
+    String ip="192.168.137.1";
     
 
     @Override

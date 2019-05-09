@@ -23,6 +23,7 @@ public class RegistroUsuario extends AppCompatActivity {
 
     EditText edTNom,edTCor,edTCon,edTCon2;
     Button btnRegistro;
+    String ip="192.168.137.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,7 +41,7 @@ public class RegistroUsuario extends AppCompatActivity {
                 String con1=edTCon.getText().toString();
                 String con2=edTCon2.getText().toString();
                 if (con1.equals(con2)) {
-                    ejecutarServicio("http://192.168.137.1/BMApp/insertarusuario.php");
+                    ejecutarServicio("http://"+ip+"/BMApp/insertarusuario.php");
                     Intent intent = new Intent(v.getContext(), PantallaPrincipal.class);
                     startActivityForResult(intent, 0);
                 }else{

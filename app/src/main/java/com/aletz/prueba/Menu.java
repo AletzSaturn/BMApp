@@ -69,6 +69,7 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
     EditText edT;
     Button btnBus,btnMenu;
     FusedLocationProviderClient fLPC;
+    String ip="192.168.137.1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,10 +92,10 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
               String numCam= edT.getText().toString();
               if(numCam.equals("1") || numCam.equals("Potrerillos")){
                   mMap.clear();
-                  buscarCoordenada("http://192.168.1.78/BMApp/recuperarCoord.php?idRuta=1");
+                  buscarCoordenada("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=1");
               }else if(numCam.equals("4") || numCam.equals("Lienzo Charro")){
                   mMap.clear();
-                  buscarCoordenada("http://192.168.1.78/BMApp/recuperarCoord.php?idRuta=4");
+                  buscarCoordenada("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=4");
               }else{
                   Toast.makeText(Menu.this, "La ruta que ingresó no existe, intente de nuevo.", Toast.LENGTH_SHORT).show();
               }
