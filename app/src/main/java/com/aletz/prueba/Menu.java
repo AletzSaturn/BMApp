@@ -93,10 +93,10 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
               String numCam= edT.getText().toString();
               if(numCam.equals("1") || numCam.equals("Potrerillos")){
                   mMap.clear();
-                  buscarCoordenada("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=1");
+                  dibujarRuta("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=1");
               }else if(numCam.equals("4") || numCam.equals("Lienzo Charro")){
                   mMap.clear();
-                  buscarCoordenada("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=4");
+                  dibujarRuta("http://"+ip+"/BMApp/recuperarCoord.php?idRuta=4");
               }else{
                   Toast.makeText(Menu.this, "La ruta que ingresó no existe, " +
                           "intente de nuevo.", Toast.LENGTH_SHORT).show();
@@ -179,7 +179,7 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
         }
     }
 
-    private void buscarCoordenada(String URL){
+    private void dibujarRuta(String URL){
         JsonArrayRequest jsnar = new JsonArrayRequest(URL, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
