@@ -23,7 +23,7 @@ public class RegistroUsuario extends AppCompatActivity {
 
     EditText edTNom,edTCor,edTCon,edTCon2;
     Button btnRegistro;
-    String ip="192.168.137.1";
+    String ip="192.168.1.78";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

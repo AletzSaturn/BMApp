@@ -27,7 +27,7 @@ public class PantallaInicioSesion extends AppCompatActivity {
     RequestQueue rQ;
     boolean encontrado;
     String con="";
-    String ip="192.168.137.1";
+    String ip="192.168.1.78";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

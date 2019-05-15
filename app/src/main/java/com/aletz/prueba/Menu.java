@@ -69,8 +69,10 @@ public class Menu extends FragmentActivity implements OnMapReadyCallback{
     EditText edT;
     Button btnBus,btnMenu;
     FusedLocationProviderClient fLPC;
-    String ip="192.168.137.1";
+    String ip="192.168.1.78";
     Marker m;
+    //ip casa=192.168.1.78
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
